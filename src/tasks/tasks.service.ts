@@ -39,7 +39,7 @@ export class TasksService {
     if (result.affected === 0) {
       throw new NotFoundException(`Task with ID "${id}" not found`);
     }
-    return `delete ${title} successful`;
+    return `delete ${title} successfully`;
   }
 
   async updateTaskStatus(id: string, status: TaskStatus, user: User): Promise<Task> {
