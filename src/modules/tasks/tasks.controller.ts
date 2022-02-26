@@ -1,9 +1,10 @@
-import { User } from './../auth/user.entity';
+import { User } from '../../database/entities/user.entity';
 import {
   Body,
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   Patch,
   Post,
@@ -11,22 +12,38 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { GetUser } from 'src/auth/get-user.decorator';
+import { GetUser } from 'src/modules/auth/get-user.decorator';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
 import { TaskStatus } from './task-status.enum';
 import { Task } from './task.entity';
 import { TasksService } from './tasks.service';
+import RoleGuard from 'src/modules/auth/role.guard';
+import Role from 'src/modules/auth/role.enum';
 
 @Controller('tasks')
-@UseGuards(AuthGuard())
 export class TasksController {
-  constructor(private tasksService: TasksService) { }
+  private logger = new Logger('Task controller');
+  constructor(
+    private tasksService: TasksService,
+  ) { }
+
+  @Get('/a')
+  @UseGuards((RoleGuard(Role.admin)))
+  testRole() {
+    return 'test role';
+  }
+
+  @Get('/b')
+  @UseGuards((RoleGuard(Role.user)))
+  testRoleb() {
+    return 'test role';
+  }
 
   @Get()
   getTasks(@Query() filterDto: GetTasksFilterDto, @GetUser() user: User): Promise<Task[]> {
-    console.log(user);
+    this.logger.verbose(`User "${user.id}" is handle get tasks. Filter:${JSON.stringify(filterDto)}`);
     return this.tasksService.getTasks(filterDto, user);
   }
 
@@ -40,6 +57,7 @@ export class TasksController {
     @Body() createTaskDto: CreateTaskDto,
     @GetUser() user: User
   ): Promise<Task> {
+    this.logger.verbose(`User ${user.id} is creating task:${JSON.stringify(createTaskDto)}`);
     return this.tasksService.createTask(createTaskDto, user);
   }
 

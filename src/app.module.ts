@@ -1,15 +1,18 @@
 import { Module } from '@nestjs/common';
-import { TasksModule } from './tasks/tasks.module';
+import { TasksModule } from './modules/tasks/tasks.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
     TasksModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
-      url: 'postgres://bvaihikm:2rMHpytPuAyQoZlwhZH3-wHTvDgywKJ0@john.db.elephantsql.com/bvaihikm',
-      database: 'task-management',
+      host: 'localhost',
+      port: 5432,
+      username: 'postgres',
+      password: '123456',
+      database: 'admin',
       autoLoadEntities: true,
       synchronize: true,
     }),
