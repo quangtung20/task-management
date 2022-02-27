@@ -1,7 +1,11 @@
 import { Module } from '@nestjs/common';
-import { TasksModule } from './modules/tasks/tasks.module';
+import { TasksModule } from './tasks/tasks.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from './modules/auth/auth.module';
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
+import { ProductModule } from './product/product.module';
+import { CategoryModule } from './category/category.module';
+
 
 @Module({
   imports: [
@@ -17,6 +21,9 @@ import { AuthModule } from './modules/auth/auth.module';
       synchronize: true,
     }),
     AuthModule,
+    UserModule,
+    ProductModule,
+    CategoryModule,
   ],
 })
 export class AppModule { }

@@ -1,5 +1,5 @@
 import { IsEmail, IsString, Matches, MaxLength, MinLength } from 'class-validator';
-import Role from '../role.enum';
+import Role from '../../../config/role.enum';
 
 export class AuthCredentialsDto {
   @IsString()

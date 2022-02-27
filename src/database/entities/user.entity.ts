@@ -1,6 +1,6 @@
-import { Task } from '../../modules/tasks/task.entity';
+import { Task } from './task.entity';
 import { Column, CreateDateColumn, Entity, Exclusion, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import Role from '../../modules/auth/role.enum';
+import Role from '../../config/role.enum';
 import { Exclude } from 'class-transformer';
 
 @Entity()

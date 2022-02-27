@@ -1,7 +1,7 @@
-import { TransformInterceptor } from './transform.interceptor';
-import { ClassSerializerInterceptor, Logger, ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { TransformInterceptor } from './interceptors/transform.interceptor';
+import { AppModule } from './modules/app.module';
 
 async function bootstrap() {
   const logger = new Logger();
@@ -9,7 +9,7 @@ async function bootstrap() {
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new TransformInterceptor());
-  const port = 3000;
+  const port = 5000;
   await app.listen(port)
     .then(() => {
       logger.log(`Application is running on port ${port}`)

@@ -1,4 +1,4 @@
-import Role from './role.enum';
+import Role from '../config/role.enum';
 import { CanActivate, ExecutionContext, ForbiddenException, mixin, Type, UnauthorizedException } from '@nestjs/common';
 import JwtAuthenticationGuard from './jwt-authentication.guard';
 
