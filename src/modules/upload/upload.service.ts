@@ -1,14 +1,22 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { v2 } from 'cloudinary';
+import { Image } from 'src/database/entities/image.entity';
 import { DestroyFileDto } from './dto/destroy-file.dto';
+import { ImageDto } from './dto/image.dto';
 import { UploadFileDto } from './dto/upload-file.dto';
 import { removeTmp } from './upload.provider';
+import { UploadRepository } from './upload.repository';
 
 
 @Injectable()
 export class UploadService {
+  constructor(
+    @InjectRepository(UploadRepository)
+    private readonly uploadRepository: UploadRepository
+  ) { }
 
-  async uploadFile(uploadFileDto: UploadFileDto) {
+  async uploadFile(uploadFileDto: UploadFileDto): Promise<Image> {
     try {
       if (!uploadFileDto) {
         throw new BadRequestException('No files were uploaded.');
@@ -30,18 +38,20 @@ export class UploadService {
         return result;
       });
 
-      return { public_id: result.public_id, url: result.secure_url };
+      const image: ImageDto = { public_id: result.public_id, url: result.secure_url };
+      return await this.uploadRepository.save(image);
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async destroyFile(destroyFileDto: DestroyFileDto) {
+  async destroyFile(destroyFileDto: DestroyFileDto): Promise<string> {
 
     if (!destroyFileDto.public_id) throw new BadRequestException('No images Selected');
 
     try {
       await v2.uploader.destroy(destroyFileDto.public_id);
+      await this.uploadRepository.delete({ public_id: destroyFileDto.public_id });
       return 'Deleted Image'
     } catch (error) {
       throw new InternalServerErrorException(error.message);

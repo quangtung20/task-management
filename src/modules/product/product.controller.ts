@@ -1,20 +1,25 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import Role from 'src/config/role.enum';
+import RoleGuard from 'src/guards/role.guard';
+import { ProductDto } from './dto/product.dto';
+import { GetProductInterface } from './get-product.interface';
 import { ProductService } from './product.service';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
 
-@Controller('product')
+
+@Controller('products')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(private readonly productService: ProductService) { }
 
   @Post()
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productService.create(createProductDto);
+  @UseGuards(RoleGuard(Role.admin))
+  create(@Body() productDto: ProductDto): Promise<string> {
+    return this.productService.create(productDto);
   }
 
   @Get()
-  findAll() {
-    return this.productService.findAll();
+  getProducts(@Query() queryString): Promise<GetProductInterface> {
+    console.log(queryString);
+    return this.productService.getProducts(queryString);
   }
 
   @Get(':id')
@@ -23,12 +28,12 @@ export class ProductController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productService.update(+id, updateProductDto);
+  update(@Param('id') id: string, @Body() updateProductDto: ProductDto): Promise<string> {
+    return this.productService.update(id, updateProductDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productService.remove(+id);
+  remove(@Param('id') id: string): Promise<string> {
+    return this.productService.remove(id);
   }
 }

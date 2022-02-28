@@ -42,17 +42,19 @@ export class TasksController {
   }
 
   @Get()
+  @UseGuards(RoleGuard(Role.user))
   getTasks(@Query() filterDto: GetTasksFilterDto, @GetUser() user: User): Promise<Task[]> {
     this.logger.verbose(`User "${user.id}" is handle get tasks. Filter:${JSON.stringify(filterDto)}`);
     return this.tasksService.getTasks(filterDto, user);
   }
 
-  @Get('/:id')
-  getTaskById(@Param('id') id: string, @GetUser() user: User): Promise<Task> {
-    return this.tasksService.getTaskById(id, user);
-  }
+  // @Get('/:id')
+  // getTaskById(@Param('id') id: string, @GetUser() user: User): Promise<Task> {
+  //   return this.tasksService.getTaskById(id, user);
+  // }
 
   @Post()
+  @UseGuards(RoleGuard(Role.user))
   createTask(
     @Body() createTaskDto: CreateTaskDto,
     @GetUser() user: User

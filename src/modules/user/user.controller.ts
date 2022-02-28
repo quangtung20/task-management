@@ -5,7 +5,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import RoleGuard from 'src/guards/role.guard';
 import Role from 'src/config/role.enum';
 
-@Controller('users')
+@Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
@@ -20,7 +20,7 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Get(':id')
+  @Get('/infor/:id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne(id);
   }

@@ -11,12 +11,13 @@ import { SignInCredentialsDto } from './dto/sign-in-credential.dto';
 export class AuthController {
     constructor(private authService: AuthService) { }
 
-    @Post('/signup')
+    @Post('/register')
     signUp(@Body() authCredentialsDto: AuthCredentialsDto): Promise<{ accessToken: string }> {
+        console.log(authCredentialsDto);
         return this.authService.signUp(authCredentialsDto);
     }
 
-    @Post('/signin')
+    @Post('/login')
     signIn(
         @Body() signInCredentialsDto: SignInCredentialsDto,
     ): Promise<{ accessToken: string }> {

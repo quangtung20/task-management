@@ -16,7 +16,6 @@ export class CategoryService {
     const { name } = createCategoryDto;
     try {
       const category = await this.categoryRepository.findOne({ name });
-      console.log(category);
       if (category) {
         throw new BadRequestException(`this category ${name} already exists`);
       }
