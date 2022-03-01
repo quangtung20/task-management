@@ -7,7 +7,7 @@ import { User } from '../database/entities/user.entity';
 import { AuthRepository } from '../modules/auth/auth.repository';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
     @InjectRepository(AuthRepository)
     private authRepository: AuthRepository,
@@ -19,13 +19,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: JwtPayload): Promise<User> {
-    const { username } = payload;
-    const user: User = await this.authRepository.findOne({ username });
+    const { email } = payload;
+    const user: User = await this.authRepository.findOne({ email });
 
     if (!user) {
       throw new UnauthorizedException('You are not alowed to do that!');
     }
-
+    delete user.password;
     return user;
   }
 }

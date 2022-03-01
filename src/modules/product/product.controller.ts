@@ -18,7 +18,6 @@ export class ProductController {
 
   @Get()
   getProducts(@Query() queryString): Promise<GetProductInterface> {
-    console.log(queryString);
     return this.productService.getProducts(queryString);
   }
 

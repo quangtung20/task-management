@@ -4,7 +4,7 @@ import { Product } from "./product.entity";
 @Entity()
 export class Image {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    _id: string;
 
     @Column({ unique: true })
     public_id: string;

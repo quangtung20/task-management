@@ -1,11 +1,12 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Cart } from "./cart.entity";
 import { Category } from "./category.entity";
 import { Image } from "./image.entity";
 
 @Entity()
 export class Product {
     @PrimaryGeneratedColumn()
-    id: string;
+    _id: string;
 
     @Column({ unique: true, nullable: false })
     product_id: string;
@@ -19,13 +20,6 @@ export class Product {
     @Column()
     description: string;
 
-    @OneToOne(() => Image)
-    @JoinColumn()
-    image: Image;
-
-    @ManyToOne(type => Category, category => category.products)
-    category: Category;
-
     @Column()
     content: string;
 
@@ -34,6 +28,16 @@ export class Product {
 
     @Column({ default: 0 })
     sold: number;
+
+    @OneToOne(() => Image)
+    @JoinColumn()
+    image: Image;
+
+    @ManyToOne(type => Category, category => category.products)
+    category: Category;
+
+    @ManyToMany(type => Cart, cart => cart.products)
+    carts: Cart[]
 
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
     public created_at: Date;

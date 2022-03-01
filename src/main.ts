@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { TransformInterceptor } from './interceptors/transform.interceptor';
 import { AppModule } from './modules/app.module';
 import * as morgan from 'morgan';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const logger = new Logger();
@@ -13,6 +14,7 @@ async function bootstrap() {
     ]
   }
   app.enableCors();
+  app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe());
   app.use(morgan('dev'));
   app.useGlobalInterceptors(new TransformInterceptor());

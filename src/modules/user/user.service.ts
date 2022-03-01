@@ -19,9 +19,9 @@ export class UserService {
     return await this.userRepository.find();
   }
 
-  async findOne(id: string) {
+  async findOne(_id: string) {
     try {
-      const user = await this.userRepository.findOne(id);
+      const user = await this.userRepository.findOne(_id);
       const { password, ...others } = user;
       return others;
     } catch (error) {

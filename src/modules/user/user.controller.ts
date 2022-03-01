@@ -4,6 +4,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import RoleGuard from 'src/guards/role.guard';
 import Role from 'src/config/role.enum';
+import { GetUser } from 'src/decorators/get-user.decorator';
+import { User } from 'src/database/entities/user.entity';
 
 @Controller('user')
 export class UserController {
@@ -20,9 +22,10 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Get('/infor/:id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(id);
+  @Get('/infor')
+  @UseGuards(RoleGuard(Role.user))
+  findOne(@GetUser() user: User) {
+    return this.userService.findOne(user._id);
   }
 
   @Patch(':id')

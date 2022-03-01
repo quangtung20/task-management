@@ -6,10 +6,10 @@ import { Exclude } from 'class-transformer';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  _id: string;
 
   @Column({ unique: true })
-  username: string;
+  name: string;
 
   @Column()
   password: string;

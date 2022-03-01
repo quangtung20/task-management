@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { APIfeatures } from 'src/config/query.feature';
 import { ProductDto } from './dto/product.dto';
 import { GetProductInterface } from './get-product.interface';
 import { ProductRepository } from './product.repository';
@@ -34,33 +33,51 @@ export class ProductService {
 
   async getProducts(queryString): Promise<GetProductInterface> {
     try {
+
       const page: number = <number>queryString.page * 1 || 1;
-      const limit: number = <number>queryString.limit * 1 || 1;
+      const limit: number = <number>queryString.limit * 1 || 9;
       const skip = limit * (page - 1);
-      const title = queryString.title;
-      let search: string = queryString.search.toString();
-      let inc: ('ASC' | 'DESC') = 'ASC';
-      if (search.search('-') !== -1) {
-        inc = 'DESC';
-        search = search.split('-').join('');
+
+      if (Object.keys(queryString).length === 0) {
+        const productList = await this.productRepository.find({
+          relations: ['image', 'category'], skip: skip, take: limit,
+        });
+
+        return { status: 'success', result: productList.length, products: productList };
+      } else {
+
+        const title = queryString.title;
+        let search: string = queryString.search || '';
+        let inc: ('ASC' | 'DESC') = 'ASC';
+
+        if (search.search('-') !== -1) {
+          inc = 'DESC';
+          search = search.split('-').join('');
+        }
+
+        const query = this.productRepository.createQueryBuilder('product')
+          .leftJoinAndSelect('product.image', 'image')
+          .leftJoinAndSelect('product.category', 'category');
+
+        if (queryString.search) {
+          query.orderBy(`product.${search}`, `${inc}`);
+        }
+
+        query.skip(skip).take(limit);
+
+        if (title) {
+          query.andWhere(
+            '(LOWER(product.title) LIKE LOWER(:search) OR LOWER(product.description) LIKE LOWER(:search) OR LOWER(product.content) LIKE LOWER(:search))',
+            { search: `%${title}%` },
+          )
+        }
+
+        const products = await query.getMany();
+
+        return { status: 'success', result: products.length, products: products };
       }
 
-      const query = this.productRepository.createQueryBuilder('product')
 
-      if (title) {
-        query.andWhere(
-          '(LOWER(product.title) LIKE LOWER(:search) OR LOWER(product.description) LIKE LOWER(:search) OR LOWER(product.content) LIKE LOWER(:search))',
-          { search: `%${title}%` },
-        )
-      }
-
-      query.leftJoinAndSelect('product.image', 'image').orderBy(`product.${search}`, `${inc}`).skip(skip).take(limit);
-      const products = await query.getMany();
-      products.forEach((product) => {
-        delete product.image.id;
-      })
-
-      return { status: 'success', result: products.length, products: products };
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
