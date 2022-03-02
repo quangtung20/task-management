@@ -28,13 +28,21 @@ export class UserController {
     return this.userService.findOne(user._id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  //   return this.userService.update(+id, updateUserDto);
+  // }
 
   @Delete(':id')
+  @UseGuards(RoleGuard(Role.admin))
   remove(@Param('id') id: string) {
     return this.userService.remove(id);
+  }
+
+  @Patch('/addcart')
+  @UseGuards(RoleGuard(Role.user))
+  addCart(@GetUser() user: User, @Body() cart: any): Promise<string> {
+    console.log(cart.cart);
+    return this.userService.addCart(user, cart);
   }
 }

@@ -36,9 +36,6 @@ export class Product {
     @ManyToOne(type => Category, category => category.products)
     category: Category;
 
-    @ManyToMany(type => Cart, cart => cart.products)
-    carts: Cart[]
-
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
     public created_at: Date;
 

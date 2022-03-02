@@ -2,6 +2,8 @@ import { Task } from './task.entity';
 import { Column, CreateDateColumn, Entity, Exclusion, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import Role from '../../config/role.enum';
 import { Exclude } from 'class-transformer';
+import { Cart } from './cart.entity';
+import { Payment } from './payment.entity';
 
 @Entity()
 export class User {
@@ -23,6 +25,12 @@ export class User {
     default: Role.user
   })
   public role: Role;
+
+  @OneToMany(() => Payment, payment => payment.user)
+  payments: Payment[];
+
+  @OneToMany(() => Cart, cart => cart.user, { onDelete: 'CASCADE', eager: true })
+  cart: Cart[];
 
   @OneToMany(() => Task, (task) => task.user, { onDelete: 'CASCADE', eager: true })
   tasks: Task[];
