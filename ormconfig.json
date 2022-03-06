@@ -4,15 +4,10 @@
   "port": 5432,
   "username": "postgres",
   "password": "123456",
-  "database": "admin",
-  "entities": [
-        "src/database/entities/**/*.entity.{ts,js}"
-    ],
-    "migrations": [
-        "src/database/migrations/**/*.{ts,js}"
-    ],
+  "database": "new",
+  "entities": ["dist/database/**/*.js"],
+    "migrations": ["dist/database/migrations/*.js"],
     "cli": {
-        "entitiesDir": "src/database/entities",
         "migrationsDir": "src/database/migrations"
     }
 }

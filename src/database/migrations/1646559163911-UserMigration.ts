@@ -1,7 +1,7 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class UserMigration1646549537398 implements MigrationInterface {
-    name = 'UserMigration1646549537398'
+export class UserMigration1646559163911 implements MigrationInterface {
+    name = 'UserMigration1646559163911'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE "category" ("_id" SERIAL NOT NULL, "name" character varying NOT NULL, CONSTRAINT "UQ_23c05c292c439d77b0de816b500" UNIQUE ("name"), CONSTRAINT "PK_0d6721292a14c4041a79fb021fb" PRIMARY KEY ("_id"))`);
@@ -9,6 +9,7 @@ export class UserMigration1646549537398 implements MigrationInterface {
         await queryRunner.query(`CREATE TABLE "product" ("_id" SERIAL NOT NULL, "product_id" character varying NOT NULL, "title" character varying NOT NULL, "price" integer NOT NULL, "description" character varying NOT NULL, "content" character varying NOT NULL, "checked" boolean NOT NULL DEFAULT false, "sold" integer NOT NULL DEFAULT '0', "created_at" TIMESTAMP NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, "updated_at" TIMESTAMP NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, "images_id" uuid, "category_id" integer, CONSTRAINT "UQ_1de6a4421ff0c410d75af27aeee" UNIQUE ("product_id"), CONSTRAINT "REL_1974264ea7265989af8392f63a" UNIQUE ("images_id"), CONSTRAINT "PK_48a340498988303028eec5c4c4f" PRIMARY KEY ("_id"))`);
         await queryRunner.query(`CREATE TABLE "payment" ("_id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying NOT NULL, "email" character varying NOT NULL, "paymentId" character varying NOT NULL, "address" character varying NOT NULL, "status" boolean NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, "updated_at" TIMESTAMP NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, "user_id" uuid, CONSTRAINT "PK_95f581c077b30fbddd4374806b6" PRIMARY KEY ("_id"))`);
         await queryRunner.query(`CREATE TABLE "task" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "title" character varying NOT NULL, "description" character varying NOT NULL, "status" character varying NOT NULL, "user_id" uuid, CONSTRAINT "PK_fb213f79ee45060ba925ecd576e" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TYPE "public"."user_role_enum" AS ENUM('1', '2')`);
         await queryRunner.query(`CREATE TABLE "user" ("_id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying NOT NULL, "password" character varying NOT NULL, "email" character varying NOT NULL, "role" "public"."user_role_enum" NOT NULL DEFAULT '1', "created_at" TIMESTAMP NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, "updated_at" TIMESTAMP NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone, CONSTRAINT "UQ_065d4d8f3b5adb4a08841eae3c8" UNIQUE ("name"), CONSTRAINT "UQ_e12875dfb3b1d92d7d7c5377e22" UNIQUE ("email"), CONSTRAINT "PK_457bfa3e35350a716846b03102d" PRIMARY KEY ("_id"))`);
         await queryRunner.query(`CREATE TABLE "cart" ("_id" character varying NOT NULL, "quantity" integer NOT NULL DEFAULT '0', "total" integer NOT NULL DEFAULT '0', "product_id" integer, "user_id" uuid, CONSTRAINT "REL_dccd1ec2d6f5644a69adf163bc" UNIQUE ("product_id"), CONSTRAINT "PK_ec117221695fb740d8cb2f04868" PRIMARY KEY ("_id"))`);
         await queryRunner.query(`ALTER TABLE "product" ADD CONSTRAINT "FK_1974264ea7265989af8392f63a1" FOREIGN KEY ("images_id") REFERENCES "image"("_id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
@@ -28,6 +29,7 @@ export class UserMigration1646549537398 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "product" DROP CONSTRAINT "FK_1974264ea7265989af8392f63a1"`);
         await queryRunner.query(`DROP TABLE "cart"`);
         await queryRunner.query(`DROP TABLE "user"`);
+        await queryRunner.query(`DROP TYPE "public"."user_role_enum"`);
         await queryRunner.query(`DROP TABLE "task"`);
         await queryRunner.query(`DROP TABLE "payment"`);
         await queryRunner.query(`DROP TABLE "product"`);
