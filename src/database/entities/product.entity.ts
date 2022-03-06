@@ -31,7 +31,7 @@ export class Product {
 
     @OneToOne(() => Image)
     @JoinColumn()
-    image: Image;
+    images: Image;
 
     @ManyToOne(type => Category, category => category.products)
     category: Category;

@@ -22,7 +22,7 @@ export class CategoryService {
       await this.categoryRepository.save(createCategoryDto);
       return 'Created a category'
     } catch (error) {
-      throw new InternalServerErrorException(error.message);
+      throw new BadRequestException(error.message);
     }
   }
 
@@ -35,10 +35,10 @@ export class CategoryService {
     }
   }
 
-  async update(id: string, updateCategoryDto: UpdateCategoryDto): Promise<string> {
+  async update(_id: string, updateCategoryDto: UpdateCategoryDto): Promise<string> {
     try {
 
-      await this.categoryRepository.update(id, updateCategoryDto);
+      await this.categoryRepository.update(_id, updateCategoryDto);
       return 'Updated a category';
     } catch (error) {
       throw new InternalServerErrorException(error.message);

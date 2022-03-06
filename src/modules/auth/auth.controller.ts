@@ -13,7 +13,6 @@ export class AuthController {
 
     @Post('/register')
     signUp(@Body() authCredentialsDto: AuthCredentialsDto, @Res({ passthrough: true }) res: Response): Promise<{ accesstoken: string }> {
-        console.log(authCredentialsDto);
         return this.authService.signUp(authCredentialsDto, res);
     }
 

@@ -12,9 +12,11 @@ export class ProductDto {
 
     content: string;
 
-    image: Image;
+    images: Image;
 
     category: Category;
+
+    _id?: string;
 
 
 }

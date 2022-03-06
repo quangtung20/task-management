@@ -26,8 +26,7 @@ export class UserService {
   async findOne(_id: string) {
     try {
       const user = await this.userRepository.findOne(_id,
-        { relations: ['cart', 'cart.product', 'cart.product.image'] });
-      console.log(user)
+        { relations: ['cart', 'cart.product', 'cart.product.images'] });
       const { password, ...others } = user;
       return others;
     } catch (error) {
@@ -64,7 +63,6 @@ export class UserService {
           product: cart.cart[i]._id.toString(),
           quantity: Number(cart.cart[i].quantity),
         }
-        console.log(newCart);
 
         await this.cartRepository.save(newCart)
       }

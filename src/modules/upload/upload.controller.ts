@@ -6,15 +6,15 @@ import { DestroyFileDto } from './dto/destroy-file.dto';
 import { UploadFileDto } from './dto/upload-file.dto';
 import { UploadService } from './upload.service';
 
-@Controller()
+@Controller('api')
 export class UploadController {
   constructor(private readonly uploadService: UploadService) { }
 
   @Post('upload')
   @UseGuards(RoleGuard(Role.admin))
   @UseInterceptors(FilesInterceptor('image'))
-  uploadFile(@UploadedFiles() files: UploadFileDto[]): Promise<{ public_id: string, url: string }> {
-    return this.uploadService.uploadFile(files[0]);
+  uploadFile(@UploadedFiles() file: UploadFileDto[]): Promise<{ public_id: string, url: string }> {
+    return this.uploadService.uploadFile(file[0]);
   }
 
   @Post('destroy')

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, UseGuards } from '@nestjs/common';
 import Role from 'src/config/role.enum';
 import { Category } from 'src/database/entities/category.entity';
 import RoleGuard from 'src/guards/role.guard';
@@ -6,7 +6,7 @@ import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
-@Controller('category')
+@Controller('api/category')
 export class CategoryController {
   constructor(
     private readonly categoryService: CategoryService,
@@ -23,10 +23,10 @@ export class CategoryController {
     return this.categoryService.getCategories();
   }
 
-  @Patch(':id')
+  @Put(':id')
   @UseGuards(RoleGuard(Role.admin))
-  update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto): Promise<string> {
-    return this.categoryService.update(id, updateCategoryDto);
+  update(@Param('id') _id: string, @Body() updateCategoryDto: UpdateCategoryDto): Promise<string> {
+    return this.categoryService.update(_id, updateCategoryDto);
   }
 
   @Delete(':id')

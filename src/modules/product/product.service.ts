@@ -14,7 +14,7 @@ export class ProductService {
 
   async create(productDto: ProductDto): Promise<string> {
     try {
-      if (!productDto.image) throw new BadRequestException('No image upload');
+      if (!productDto.images) throw new BadRequestException('No image upload');
 
       const product = await this.productRepository.findOne({ product_id: productDto.product_id });
       if (product) {
@@ -22,6 +22,7 @@ export class ProductService {
       }
 
       productDto.title = productDto.title.toLowerCase();
+      delete productDto?._id;
 
       await this.productRepository.save(productDto);
 
@@ -37,17 +38,25 @@ export class ProductService {
       const page: number = <number>queryString.page * 1 || 1;
       const limit: number = <number>queryString.limit * 1 || 9;
       const skip = limit * (page - 1);
+      const category = queryString.category;
 
       if (Object.keys(queryString).length === 0) {
-        const productList = await this.productRepository.find({
-          relations: ['image', 'category'], skip: skip, take: limit,
-        });
+        // const productList = await this.productRepository.find({
+        //   relations: ['images', 'category'], order: { created_at: 'DESC' },
+        //   // skip: skip, take: limit,
 
-        return { status: 'success', result: productList.length, products: productList };
+        // });
+        const products = await this.productRepository.createQueryBuilder('product')
+          .leftJoinAndSelect('product.images', 'images')
+          .leftJoinAndSelect('product.category', 'category')
+          .orderBy('product.created_at', 'DESC')
+          .getMany()
+
+        return { status: 'success', result: products.length, products: products };
       } else {
 
         const title = queryString.title;
-        let search: string = queryString.search || '';
+        let search: string = queryString.sort || '';
         let inc: ('ASC' | 'DESC') = 'ASC';
 
         if (search.search('-') !== -1) {
@@ -56,14 +65,14 @@ export class ProductService {
         }
 
         const query = this.productRepository.createQueryBuilder('product')
-          .leftJoinAndSelect('product.image', 'image')
+          .leftJoinAndSelect('product.images', 'images')
           .leftJoinAndSelect('product.category', 'category');
 
-        if (queryString.search) {
+        if (queryString.sort) {
           query.orderBy(`product.${search}`, `${inc}`);
+        } else {
+          query.orderBy(`product.created_at`, `DESC`);
         }
-
-        query.skip(skip).take(limit);
 
         if (title) {
           query.andWhere(
@@ -71,6 +80,12 @@ export class ProductService {
             { search: `%${title}%` },
           )
         }
+
+        if (category) {
+          query.andWhere('product.category = :category', { category: category });
+        }
+
+        query.take(limit);
 
         const products = await query.getMany();
 
@@ -89,7 +104,7 @@ export class ProductService {
 
   async update(id: string, updateProductDto: ProductDto): Promise<string> {
     try {
-      if (!updateProductDto.image) {
+      if (!updateProductDto.images) {
         throw new BadRequestException('No image upload');
       }
       await this.productRepository.update(id, updateProductDto);

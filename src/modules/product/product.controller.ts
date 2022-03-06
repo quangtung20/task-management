@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
 import Role from 'src/config/role.enum';
 import RoleGuard from 'src/guards/role.guard';
 import { ProductDto } from './dto/product.dto';
@@ -6,7 +6,7 @@ import { GetProductInterface } from './get-product.interface';
 import { ProductService } from './product.service';
 
 
-@Controller('products')
+@Controller('api/products')
 export class ProductController {
   constructor(private readonly productService: ProductService) { }
 
@@ -26,7 +26,7 @@ export class ProductController {
     return this.productService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateProductDto: ProductDto): Promise<string> {
     return this.productService.update(id, updateProductDto);
   }

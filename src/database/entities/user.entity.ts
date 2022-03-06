@@ -1,9 +1,8 @@
-import { Task } from './task.entity';
-import { Column, CreateDateColumn, Entity, Exclusion, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import Role from '../../config/role.enum';
-import { Exclude } from 'class-transformer';
 import { Cart } from './cart.entity';
 import { Payment } from './payment.entity';
+import { Task } from './task.entity';
 
 @Entity()
 export class User {

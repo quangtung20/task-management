@@ -13,16 +13,7 @@ import { PaymentModule } from './payment/payment.module';
 @Module({
   imports: [
     TasksModule,
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: '123456',
-      database: 'admin',
-      autoLoadEntities: true,
-      synchronize: true,
-    }),
+    TypeOrmModule.forRoot(),
     AuthModule,
     UserModule,
     ProductModule,

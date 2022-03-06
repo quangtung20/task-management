@@ -42,7 +42,6 @@ export class UserController {
   @Patch('/addcart')
   @UseGuards(RoleGuard(Role.user))
   addCart(@GetUser() user: User, @Body() cart: any): Promise<string> {
-    console.log(cart.cart);
     return this.userService.addCart(user, cart);
   }
 }
