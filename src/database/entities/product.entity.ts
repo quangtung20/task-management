@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Cart } from "./cart.entity";
 import { Category } from "./category.entity";
 import { Image } from "./image.entity";
@@ -35,6 +35,15 @@ export class Product {
 
     @ManyToOne(type => Category, category => category.products)
     category: Category;
+
+    @OneToMany(() => Cart, cart => cart.product, {
+        createForeignKeyConstraints: false
+    })
+    @JoinColumn({
+        referencedColumnName: 'product_id',
+        name: 'product_id'
+    })
+    cart: Cart[]
 
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
     public created_at: Date;

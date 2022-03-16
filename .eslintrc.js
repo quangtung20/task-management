@@ -5,7 +5,8 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: ['@typescript-eslint/eslint-plugin'],
-  extends: [],
+  extends: [
+  ],
   root: true,
   env: {
     node: true,

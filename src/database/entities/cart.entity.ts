@@ -5,11 +5,19 @@ import { User } from "./user.entity";
 @Entity()
 export class Cart {
 
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn()
     _id: string;
 
-    @OneToOne(() => Product)
-    @JoinColumn()
+    @Column()
+    product_id: string;
+
+    @ManyToOne(() => Product, product => product.cart, {
+        createForeignKeyConstraints: false
+    })
+    @JoinColumn({
+        referencedColumnName: 'product_id',
+        name: 'product_id'
+    })
     product: Product;
 
     // @ManyToOne(type => Payment, payment => payment.carts, { nullable: true })
