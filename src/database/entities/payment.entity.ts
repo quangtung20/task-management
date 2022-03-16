@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Cart } from "./cart.entity";
 import { User } from "./user.entity";
 
@@ -14,19 +14,20 @@ export class Payment {
     email: string;
 
     @Column()
-    paymentId: string;
+    paymentID: string;
 
     @Column()
     address: string;
 
-    @Column()
+    @Column({ default: false })
     status: boolean;
 
     @ManyToOne(() => User, user => user.payments)
+    @JoinColumn({ name: 'user_id' })
     user: User;
 
-    // @OneToMany(() => Cart, cart => cart.payment)
-    // carts: Cart[]
+    @OneToMany(() => Cart, cart => cart.payment)
+    cart: Cart[]
 
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
     public created_at: Date;

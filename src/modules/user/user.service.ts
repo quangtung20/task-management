@@ -12,6 +12,8 @@ export class UserService {
   constructor(
     @InjectRepository(UserRepository)
     private userRepository: UserRepository,
+
+    @InjectRepository(CartRepository)
     private cartRepository: CartRepository,
   ) { }
 
@@ -63,7 +65,7 @@ export class UserService {
           quantity: Number(cart.cart[i].quantity),
         }
 
-        await this.cartRepository.save(newCart)
+        await this.cartRepository.save(newCart);
       }
 
       return 'done';

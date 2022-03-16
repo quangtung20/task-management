@@ -1,4 +1,5 @@
 import { Column, Entity, Generated, JoinColumn, ManyToOne, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Payment } from "./payment.entity";
 import { Product } from "./product.entity";
 import { User } from "./user.entity";
 
@@ -20,11 +21,12 @@ export class Cart {
     })
     product: Product;
 
-    // @ManyToOne(type => Payment, payment => payment.carts, { nullable: true })
-    // payment: Payment;
-
     @ManyToOne(type => User, user => user.cart)
     user: User;
+
+    @ManyToOne(type => Payment, payment => payment.cart)
+    @JoinColumn({ name: 'payment_id' })
+    payment: Payment[]
 
     @Column({ default: 0 })
     quantity: number;
