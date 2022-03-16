@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import Role from '../../config/role.enum';
 import { Cart } from './cart.entity';
@@ -13,6 +14,7 @@ export class User {
   name: string;
 
   @Column()
+  @Exclude()
   password: string;
 
   @Column({ unique: true })
@@ -28,7 +30,7 @@ export class User {
   @OneToMany(() => Payment, payment => payment.user)
   payments: Payment[];
 
-  @OneToMany(() => Cart, cart => cart.user, { onDelete: 'CASCADE', eager: true })
+  @OneToMany(() => Cart, cart => cart.user, { eager: true })
   cart: Cart[];
 
   @OneToMany(() => Task, (task) => task.user, { onDelete: 'CASCADE', eager: true })

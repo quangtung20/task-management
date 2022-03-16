@@ -1,8 +1,5 @@
-import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
-import Role from '../../config/role.enum';
-import { User } from '../../database/entities/user.entity';
-import RoleGuard from '../../guards/role.guard';
 import { AuthService } from './auth.service';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { SignInCredentialsDto } from './dto/sign-in-credential.dto';

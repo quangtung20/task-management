@@ -53,12 +53,13 @@ export class UserService {
       if (!check) {
         throw new BadRequestException('User does not exist.');
       }
-
-      await this.cartRepository.createQueryBuilder().delete().from(Cart).execute();
+      // const data = await this.cartRepository.find({ where: { user: user } });
+      // console.log("data:", data);
+      await this.cartRepository.createQueryBuilder().delete().from(Cart).where('cart.user_id=:user', { user: user._id }).execute();
 
       for (let i: number = 0; i < cart.cart.length; i++) {
         const newCart = {
-          _id: (i + 1).toString(),
+          _id: cart.cart[i]._id.toString(),
           user: user,
           product: cart.cart[i]._id.toString(),
           quantity: Number(cart.cart[i].quantity),

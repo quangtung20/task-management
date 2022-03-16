@@ -1,9 +1,10 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, Generated, JoinColumn, ManyToOne, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { Product } from "./product.entity";
 import { User } from "./user.entity";
 
 @Entity()
 export class Cart {
+
     @PrimaryColumn()
     _id: string;
 

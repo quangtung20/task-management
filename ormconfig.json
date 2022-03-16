@@ -5,6 +5,8 @@
   "username": "postgres",
   "password": "123456",
   "database": "new",
+  "autoLoadEntities":true,
+  "synchronize":true,
   "entities": ["dist/database/**/*.js"],
     "migrations": ["dist/database/migrations/*.js"],
     "cli": {
