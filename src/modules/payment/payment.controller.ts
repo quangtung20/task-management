@@ -1,12 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { PaymentService } from './payment.service';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import Role from 'src/config/role.enum';
+import { User } from 'src/database/entities/user.entity';
+import { GetUser } from 'src/decorators/get-user.decorator';
+import RoleGuard from 'src/guards/role.guard';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
-import { AuthGuard } from '@nestjs/passport';
-import RoleGuard from 'src/guards/role.guard';
-import Role from 'src/config/role.enum';
-import { GetUser } from 'src/decorators/get-user.decorator';
-import { User } from 'src/database/entities/user.entity';
+import { PaymentService } from './payment.service';
 
 @Controller()
 export class PaymentController {

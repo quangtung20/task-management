@@ -1,15 +1,19 @@
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { v2 } from 'cloudinary';
 import { unlink } from 'fs';
 export const CloudinaryProvider = {
     provide: 'Cloudinary',
     useFactory: (): any => {
         return v2.config({
-            cloud_name: 'quangtung',
-            api_key: '691767399919572',
-            api_secret: 'bzVUcJRt5iQ7fjwKNJtopXkrfzo',
+            cloud_name: `${process.env.CLOUDINARY_NAME}`,
+            api_key: `${process.env.CLOUDINARY_API_KEY}`,
+            api_secret: `${process.env.CLOUDINARY_API_SECRET}`,
         })
     }
 }
+
+
 
 export const removeTmp = (path) => {
     unlink(path, err => {

@@ -2,11 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaymentItem } from 'src/database/entities/payment-item.entity';
 import { Payment } from 'src/database/entities/payment.entity';
-import { Product } from 'src/database/entities/product.entity';
 import { User } from 'src/database/entities/user.entity';
 import { Repository } from 'typeorm';
 import { ProductRepository } from '../product/product.repository';
-import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { PaymentRepository } from './payment.repository';
 

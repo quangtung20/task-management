@@ -8,10 +8,15 @@ import { CategoryModule } from './category/category.module';
 import { UploadModule } from './upload/upload.module';
 import { CartModule } from './cart/cart.module';
 import { PaymentModule } from './payment/payment.module';
+import { ConfigModule } from '@nestjs/config';
 
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ['.env']
+    }),
     TasksModule,
     TypeOrmModule.forRoot(),
     AuthModule,

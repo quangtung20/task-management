@@ -10,7 +10,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const corsOptions = {
     origin: [
-      'http://localhost:3000',
+      `${process.env.CLIENT_URL}`,
     ]
   }
   app.enableCors();
@@ -18,7 +18,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.use(morgan('dev'));
   app.useGlobalInterceptors(new TransformInterceptor());
-  const port = 5000;
+  const port = process.env.PORT || 5000;
   await app.listen(port)
     .then(() => {
       logger.log(`Application is running on port ${port}`)

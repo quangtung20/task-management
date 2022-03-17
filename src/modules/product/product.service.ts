@@ -41,11 +41,6 @@ export class ProductService {
       const category = queryString.category;
 
       if (Object.keys(queryString).length === 0) {
-        // const productList = await this.productRepository.find({
-        //   relations: ['images', 'category'], order: { created_at: 'DESC' },
-        //   // skip: skip, take: limit,
-
-        // });
         const products = await this.productRepository.createQueryBuilder('product')
           .leftJoinAndSelect('product.images', 'images')
           .leftJoinAndSelect('product.category', 'category')
