@@ -12,7 +12,7 @@ import { UploadService } from './upload.service';
     ConfigModule,
     AuthModule,
     MulterModule.register({
-      dest: '../uploads',
+      dest: './uploads',
     }),
     TypeOrmModule.forFeature([UploadRepository])
   ],

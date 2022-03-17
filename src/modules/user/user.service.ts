@@ -8,6 +8,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserRepository } from './user.repository';
 import * as bcrypt from 'bcrypt';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { CartsDto } from './dto/carts.dto';
 
 @Injectable()
 export class UserService {
@@ -27,31 +28,33 @@ export class UserService {
     return await this.userRepository.find();
   }
 
-  async findOne(_id: string) {
+  async findOne(_id: string): Promise<User> {
     try {
       const user = await this.userRepository.findOne(_id,
         { relations: ['cart', 'cart.product', 'cart.product.images'] });
-      const { password, ...others } = user;
-      return others;
+      return user;
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
-    return await this.userRepository.update(id, updateUserDto);
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<string> {
+    await this.userRepository.update(id, updateUserDto);
+    return 'Done update';
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<string> {
     try {
+
       await this.userRepository.delete(id);
+
       return 'User has been deleted ...';
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     };
   }
 
-  async changePassword(id: string, changePasswordDto: ChangePasswordDto,) {
+  async changePassword(id: string, changePasswordDto: ChangePasswordDto): Promise<string> {
     try {
       const user = await this.userRepository.findOne(id);
 
@@ -59,19 +62,23 @@ export class UserService {
       if (newPassword !== confirmPassword) {
         throw new BadRequestException('New password does not match')
       }
+
       const checkOldPass = await bcrypt.compare(oldPassword, user.password);
       if (!checkOldPass) {
         throw new BadRequestException('Old password does not match')
       }
+
       const salt = await bcrypt.genSalt();
       const hashedPassword = await bcrypt.hash(newPassword, salt);
-      await this.userRepository.update(user._id, { password: hashedPassword })
+      await this.userRepository.update(user._id, { password: hashedPassword });
+
+      return 'Done change password';
     } catch (error) {
       throw new InternalServerErrorException(error.message)
     }
   }
 
-  async addCart(user: User, cart: any): Promise<string> {
+  async addCart(user: User, cart: CartsDto): Promise<string> {
     try {
       const check = await this.userRepository.findOne(user._id);
       if (!check) {
@@ -81,6 +88,7 @@ export class UserService {
       await this.cartRepository.createQueryBuilder().delete().from(Cart).where('cart.user_id=:user', { user: user._id }).execute();
 
       for (let i: number = 0; i < cart.cart.length; i++) {
+
         const newCart = {
           user: user,
           product_id: cart.cart[i].product_id.toString(),
@@ -90,9 +98,9 @@ export class UserService {
         await this.cartRepository.save(newCart);
       }
 
-      return 'done';
+      return 'updated your cart';
     } catch (error) {
-      console.log(error.message)
+      console.log(error.message);
       throw new InternalServerErrorException(error.message);
     }
   }

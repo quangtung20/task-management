@@ -9,13 +9,17 @@ export class AuthController {
     constructor(private authService: AuthService) { }
 
     @Post('/register')
-    signUp(@Body() authCredentialsDto: AuthCredentialsDto, @Res({ passthrough: true }) res: Response): Promise<{ accesstoken: string }> {
+    signUp(
+        @Body() authCredentialsDto: AuthCredentialsDto,
+        @Res({ passthrough: true }) res: Response
+    ): Promise<{ accesstoken: string }> {
         return this.authService.signUp(authCredentialsDto, res);
     }
 
     @Post('/login')
     signIn(
-        @Body() signInCredentialsDto: SignInCredentialsDto, @Res({ passthrough: true }) res: Response
+        @Body() signInCredentialsDto: SignInCredentialsDto,
+        @Res({ passthrough: true }) res: Response
     ): Promise<{ accesstoken: string }> {
         return this.authService.signIn(signInCredentialsDto, res);
     }

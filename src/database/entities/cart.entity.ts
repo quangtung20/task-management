@@ -24,10 +24,6 @@ export class Cart {
     @ManyToOne(type => User, user => user.cart)
     user: User;
 
-    // @ManyToOne(type => Payment, payment => payment.cart)
-    // @JoinColumn({ name: 'payment_id' })
-    // payment: Payment[]
-
     @Column({ default: 0 })
     quantity: number;
 

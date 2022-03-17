@@ -86,16 +86,11 @@ export class ProductService {
 
         return { status: 'success', result: products.length, products: products };
       }
-
-
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
-  }
 
   async update(id: string, updateProductDto: ProductDto): Promise<string> {
     try {

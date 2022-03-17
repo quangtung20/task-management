@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaymentItem } from 'src/database/entities/payment-item.entity';
 import { Payment } from 'src/database/entities/payment.entity';
@@ -16,7 +16,7 @@ export class PaymentService {
     @InjectRepository(PaymentItem) private paymentItemRepository: Repository<PaymentItem>
   ) { }
 
-  async create(createPaymentDto: any, user: User) {
+  async create(createPaymentDto: any, user: User): Promise<string> {
     try {
       const { cart, paymentID, address } = createPaymentDto;
       const { _id, name, email } = user;
@@ -44,28 +44,32 @@ export class PaymentService {
 
       return 'This action adds a new payment';
     } catch (error) {
-      console.log(error.message)
+      throw new InternalServerErrorException(error.message);
     }
   }
 
-  async findAll() {
+  async findAll(): Promise<Payment[]> {
     try {
       const payments = await this.paymentRepository.find({
         relations: ['cart', 'cart.product', 'cart.product.images']
       });
       return payments;
     } catch (error) {
-      console.log(error.message)
+      throw new InternalServerErrorException(error.message);
     }
   }
 
-  async history(_id: string, user: User) {
+  async history(_id: string, user: User): Promise<Payment[]> {
     try {
-      const history = await this.paymentRepository.find({ where: { user: user }, relations: ['cart', 'cart.product', 'cart.product.images'] })
-      console.log(history);
+      const history = await this.paymentRepository.find(
+        {
+          where: { user: user },
+          relations: ['cart', 'cart.product', 'cart.product.images', 'user']
+        }
+      );
       return history;
     } catch (error) {
-      console.log(error.message)
+      throw new InternalServerErrorException(error.message);
     }
   }
 

@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import Role from 'src/config/role.enum';
 import RoleGuard from 'src/guards/role.guard';
 import { ProductDto } from './dto/product.dto';
+import { QueryStringDto } from './dto/query-string.dto';
 import { GetProductInterface } from './get-product.interface';
 import { ProductService } from './product.service';
 
@@ -17,13 +18,8 @@ export class ProductController {
   }
 
   @Get()
-  getProducts(@Query() queryString): Promise<GetProductInterface> {
+  getProducts(@Query() queryString: QueryStringDto): Promise<GetProductInterface> {
     return this.productService.getProducts(queryString);
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productService.findOne(+id);
   }
 
   @Put(':id')

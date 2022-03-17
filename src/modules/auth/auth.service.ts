@@ -16,7 +16,10 @@ export class AuthService {
         private jwtService: JwtService,
     ) { }
 
-    async signUp(authCredentialsDto: AuthCredentialsDto, res: Response): Promise<{ accesstoken: string }> {
+    async signUp(
+        authCredentialsDto: AuthCredentialsDto,
+        res: Response
+    ): Promise<{ accesstoken: string }> {
         try {
             const { password, confirmPassword } = authCredentialsDto;
 
@@ -55,7 +58,8 @@ export class AuthService {
     }
 
     async signIn(
-        signInCredentialsDto: SignInCredentialsDto, res: Response
+        signInCredentialsDto: SignInCredentialsDto,
+        res: Response
     ): Promise<{ accesstoken: string }> {
         try {
             const { email, password } = signInCredentialsDto;
