@@ -1,5 +1,6 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Cart } from "./cart.entity";
+import { PaymentItem } from "./payment-item.entity";
 import { User } from "./user.entity";
 
 @Entity()
@@ -26,8 +27,8 @@ export class Payment {
     @JoinColumn({ name: 'user_id' })
     user: User;
 
-    @OneToMany(() => Cart, cart => cart.payment)
-    cart: Cart[]
+    @OneToMany(() => PaymentItem, paymentItem => paymentItem.payment)
+    cart: PaymentItem[];
 
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
     public created_at: Date;

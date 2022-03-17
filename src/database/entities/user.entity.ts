@@ -1,4 +1,5 @@
 import { Exclude } from 'class-transformer';
+import Sex from 'src/config/sex.enum';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import Role from '../../config/role.enum';
 import { Cart } from './cart.entity';
@@ -19,6 +20,16 @@ export class User {
 
   @Column({ unique: true })
   email: string;
+
+  @Column({ unique: true })
+  phoneNumber: string;
+
+  @Column({
+    type: 'enum',
+    enum: Sex,
+    default: Sex.male
+  })
+  public sex: Sex;
 
   @Column({
     type: 'enum',

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PaymentItem } from 'src/database/entities/payment-item.entity';
 import { Payment } from 'src/database/entities/payment.entity';
 import { Product } from 'src/database/entities/product.entity';
 import { User } from 'src/database/entities/user.entity';
@@ -13,7 +14,8 @@ import { PaymentRepository } from './payment.repository';
 export class PaymentService {
   constructor(
     @InjectRepository(Payment) private paymentRepository: PaymentRepository,
-    @InjectRepository(ProductRepository) private readonly productRepository: ProductRepository
+    @InjectRepository(ProductRepository) private readonly productRepository: ProductRepository,
+    @InjectRepository(PaymentItem) private paymentItemRepository: Repository<PaymentItem>
   ) { }
 
   async create(createPaymentDto: any, user: User) {
@@ -22,15 +24,26 @@ export class PaymentService {
       const { _id, name, email } = user;
       const city = address.city;
       const newPayment = await this.paymentRepository.create({
-        name, email, paymentID, user: user, cart: cart, address: city
+        name, email, paymentID, user: user, address: city
       })
+      const payment = await this.paymentRepository.save(newPayment);
+
+      for (let p of cart) {
+        const paymentItem = new PaymentItem();
+        paymentItem.payment = payment;
+        paymentItem.product_id = p.product_id;
+        paymentItem.quantity = p.quantity;
+        paymentItem.total = p.total;
+        paymentItem.product = p;
+
+        await this.paymentItemRepository.save(paymentItem);
+      }
 
       cart.filter(item => {
-        console.log(item)
         return this.sold(item._id, item.quantity, item.sold)
       })
 
-      await this.paymentRepository.save(newPayment);
+
       return 'This action adds a new payment';
     } catch (error) {
       console.log(error.message)
@@ -39,7 +52,9 @@ export class PaymentService {
 
   async findAll() {
     try {
-      const payments = await this.paymentRepository.find();
+      const payments = await this.paymentRepository.find({
+        relations: ['cart', 'cart.product', 'cart.product.images']
+      });
       return payments;
     } catch (error) {
       console.log(error.message)
@@ -48,7 +63,7 @@ export class PaymentService {
 
   async history(_id: string, user: User) {
     try {
-      const history = await this.paymentRepository.find({ where: { user: user }, relations: ['cart'] })
+      const history = await this.paymentRepository.find({ where: { user: user }, relations: ['cart', 'cart.product', 'cart.product.images'] })
       console.log(history);
       return history;
     } catch (error) {

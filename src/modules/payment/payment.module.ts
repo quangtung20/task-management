@@ -6,10 +6,11 @@ import { PaymentRepository } from './payment.repository';
 import { AuthModule } from '../auth/auth.module';
 import { Payment } from 'src/database/entities/payment.entity';
 import { ProductRepository } from '../product/product.repository';
+import { PaymentItem } from 'src/database/entities/payment-item.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Payment, ProductRepository]),
+    TypeOrmModule.forFeature([Payment, ProductRepository, PaymentItem]),
   ],
   controllers: [PaymentController],
   providers: [PaymentService]

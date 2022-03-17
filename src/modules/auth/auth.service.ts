@@ -1,12 +1,12 @@
 import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { AuthCredentialsDto } from './dto/auth-credentials.dto';
-import { AuthRepository } from './auth.repository';
-import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { JwtPayload } from '../../config/jwt-payload.interface';
-import { SignInCredentialsDto } from './dto/sign-in-credential.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
+import { JwtPayload } from '../../config/jwt-payload.interface';
+import { AuthRepository } from './auth.repository';
+import { AuthCredentialsDto } from './dto/auth-credentials.dto';
+import { SignInCredentialsDto } from './dto/sign-in-credential.dto';
 
 @Injectable()
 export class AuthService {
@@ -18,7 +18,11 @@ export class AuthService {
 
     async signUp(authCredentialsDto: AuthCredentialsDto, res: Response): Promise<{ accesstoken: string }> {
         try {
-            const { password } = authCredentialsDto;
+            const { password, confirmPassword } = authCredentialsDto;
+
+            if (password !== confirmPassword) {
+                throw new BadRequestException('Password does not match, please try again');
+            }
 
             const salt = await bcrypt.genSalt();
             const hashedPassword = await bcrypt.hash(password, salt);
@@ -32,9 +36,11 @@ export class AuthService {
 
             res.cookie('refreshtoken', refreshToken, {
                 httpOnly: true,
-                path: '/user/refresh_token',
+                path: '/auth/refresh_token',
                 maxAge: 7 * 24 * 60 * 60 * 1000 // 7d
             })
+
+
             return { accesstoken: accessToken };
 
         } catch (error) {
@@ -76,7 +82,7 @@ export class AuthService {
                 throw new UnauthorizedException('Please check your password');
             }
         } catch (error) {
-            throw new InternalServerErrorException(error.message);
+            throw new BadRequestException(error.message);
         }
     }
 
@@ -91,7 +97,7 @@ export class AuthService {
 
             return { accesstoken: accessToken }
         } catch (error) {
-            throw new InternalServerErrorException(error.message);
+            throw new BadRequestException(error.message);
         }
     }
 
@@ -103,4 +109,5 @@ export class AuthService {
             throw new InternalServerErrorException(error.message);
         }
     }
+
 }

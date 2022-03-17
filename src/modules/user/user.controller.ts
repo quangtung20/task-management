@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Put } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -6,6 +6,9 @@ import RoleGuard from 'src/guards/role.guard';
 import Role from 'src/config/role.enum';
 import { GetUser } from 'src/decorators/get-user.decorator';
 import { User } from 'src/database/entities/user.entity';
+import { ChangePasswordDto } from './dto/change-password.dto';
+
+
 
 @Controller('user')
 export class UserController {
@@ -28,10 +31,17 @@ export class UserController {
     return this.userService.findOne(user._id);
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-  //   return this.userService.update(+id, updateUserDto);
-  // }
+  @Put('/update/:id')
+  @UseGuards(RoleGuard(Role.user))
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.update(id, updateUserDto);
+  }
+
+  @Put('/password/:id')
+  @UseGuards(RoleGuard(Role.user))
+  changPassword(@Param('id') id: string, @Body() changePasswordDto: ChangePasswordDto) {
+    return this.userService.changePassword(id, changePasswordDto);
+  }
 
   @Delete(':id')
   @UseGuards(RoleGuard(Role.admin))

@@ -6,6 +6,8 @@ import { CartRepository } from '../cart/cart.repository';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserRepository } from './user.repository';
+import * as bcrypt from 'bcrypt';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Injectable()
 export class UserService {
@@ -36,8 +38,8 @@ export class UserService {
     }
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    return await this.userRepository.update(id, updateUserDto);
   }
 
   async remove(id: string) {
@@ -47,6 +49,26 @@ export class UserService {
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     };
+  }
+
+  async changePassword(id: string, changePasswordDto: ChangePasswordDto,) {
+    try {
+      const user = await this.userRepository.findOne(id);
+
+      const { newPassword, oldPassword, confirmPassword } = changePasswordDto;
+      if (newPassword !== confirmPassword) {
+        throw new BadRequestException('New password does not match')
+      }
+      const checkOldPass = await bcrypt.compare(oldPassword, user.password);
+      if (!checkOldPass) {
+        throw new BadRequestException('Old password does not match')
+      }
+      const salt = await bcrypt.genSalt();
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+      await this.userRepository.update(user._id, { password: hashedPassword })
+    } catch (error) {
+      throw new InternalServerErrorException(error.message)
+    }
   }
 
   async addCart(user: User, cart: any): Promise<string> {
