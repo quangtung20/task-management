@@ -9,7 +9,7 @@ async function bootstrap() {
   const logger = new Logger();
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: [`${process.env.CLIENT_URL}`],
+    origin: [`https://6234563453f3b4761d8c572a--netlify-9999.netlify.app`, 'http://localhost:3000'],
     credentials: true
   });
   app.use(cookieParser());
