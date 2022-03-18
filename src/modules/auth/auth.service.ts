@@ -80,6 +80,7 @@ export class AuthService {
                     path: '/auth/refresh_token',
                     maxAge: 7 * 24 * 60 * 60 * 1000 // 7d
                 })
+                console.log('haha');
                 return { accesstoken: accessToken };
             } else {
                 throw new UnauthorizedException('Please check your password');
