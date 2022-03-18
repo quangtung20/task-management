@@ -3,17 +3,17 @@ import { NestFactory } from '@nestjs/core';
 import { TransformInterceptor } from './interceptors/transform.interceptor';
 import { AppModule } from './modules/app.module';
 import * as cookieParser from 'cookie-parser';
+import * as morgan from 'morgan';
 
 async function bootstrap() {
   const logger = new Logger();
   const app = await NestFactory.create(AppModule);
-  const corsOptions = {
-    origin: [
-      `${process.env.CLIENT_URL}`,
-    ]
-  }
-  app.enableCors();
+  app.enableCors({
+    origin: [`${process.env.CLIENT_URL}`],
+    credentials: true
+  });
   app.use(cookieParser());
+  app.use(morgan('dev'))
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new TransformInterceptor());
   const port = process.env.PORT || 5000;

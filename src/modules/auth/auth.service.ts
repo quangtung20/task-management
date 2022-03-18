@@ -80,7 +80,6 @@ export class AuthService {
                     path: '/auth/refresh_token',
                     maxAge: 7 * 24 * 60 * 60 * 1000 // 7d
                 })
-
                 return { accesstoken: accessToken };
             } else {
                 throw new UnauthorizedException('Please check your password');
@@ -92,6 +91,7 @@ export class AuthService {
 
     async refreshToken(req: Request): Promise<{ accesstoken: string }> {
         try {
+            console.log(req.cookies['refreshtoken']);
             const rfToken = req.cookies.refreshtoken;
             if (!rfToken) throw new BadRequestException("please login or Register");
 
