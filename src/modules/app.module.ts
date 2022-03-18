@@ -32,7 +32,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
           type: 'postgres',
           autoLoadEntities: true,
           synchronize: true,
-          url: `${configService.get('DB_URL')}`,
+          url: configService.get('DB_URL').toString(),
           // host: configService.get('HOST'),
           // port: configService.get('DB_PORT'),
           // username: configService.get('DB_USERNAME'),
